@@ -6,14 +6,20 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class SimpleServer extends AbstractServer {
 	private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
+	private String id1, id2;
 
 	public SimpleServer(int port) {
 		super(port);
-		
+		id1 = "213647084";
+		id2 = "325897551";
 	}
 
 	@Override
@@ -31,7 +37,10 @@ public class SimpleServer extends AbstractServer {
 			//their IDs text fields. An example of use of observer design pattern.
 			//message format: "change submitters IDs: 123456789, 987654321"
 			else if(request.startsWith("change submitters IDs:")){
-				message.setData(request.substring(23));
+				var text = request.substring(23);
+				var ids = text.split(", ");
+				id1 = ids[0];
+				id2 = ids[1];
 				message.setMessage("update submitters IDs");
 				sendToAllClients(message);
 			}
@@ -48,18 +57,27 @@ public class SimpleServer extends AbstractServer {
 				client.sendToClient(message);
 			}
 			else if(request.startsWith("send Submitters IDs")){
-				//add code here to send submitters IDs to client
+				message.setMessage(id1 + ", " + id2);
+				client.sendToClient(message);
 			}
 			else if (request.startsWith("send Submitters")){
-				//add code here to send submitters names to client
+				message.setMessage("Ido Talbi, Alon Krymgand");
+				client.sendToClient(message);
 			}
 			else if (request.equals("what’s the time?")) {
-				//add code here to send the time to client
+				message.setMessage(
+						new SimpleDateFormat("HH:mm:ss").format(new Date()).toString()
+				);
+				client.sendToClient(message);
 			}
 			else if (request.startsWith("multiply")){
-				//add code here to multiply 2 numbers received in the message and send result back to client
-				//(use substring method as shown above)
-				//message format: "multiply n*m"
+				String text = request.substring(9);
+				long n, m;
+				var nums = text.split("\\*");
+				n = Long.parseLong(nums[0]);
+				m = Long.parseLong(nums[1]);
+				message.setMessage(Long.toString(n * m));
+				client.sendToClient(message);
 			}else{
 				//add code here to send received message to all clients.
 				//The string we received in the message is the message we will send back to all clients subscribed.
@@ -67,6 +85,7 @@ public class SimpleServer extends AbstractServer {
 					// message received: "Good morning"
 					// message sent: "Good morning"
 				//see code for changing submitters IDs for help
+				this.sendToAllClients(msg);
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
