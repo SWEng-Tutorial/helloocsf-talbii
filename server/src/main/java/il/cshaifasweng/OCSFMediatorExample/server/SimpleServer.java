@@ -6,10 +6,8 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class SimpleServer extends AbstractServer {
@@ -66,7 +64,7 @@ public class SimpleServer extends AbstractServer {
 			}
 			else if (request.equals("what’s the time?")) {
 				message.setMessage(
-						new SimpleDateFormat("HH:mm:ss").format(new Date()).toString()
+						new SimpleDateFormat("HH:mm:ss").format(new Date())
 				);
 				client.sendToClient(message);
 			}
